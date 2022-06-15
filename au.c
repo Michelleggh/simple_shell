@@ -1,82 +1,80 @@
 #include "shell.h"
-
 /**
- *   check_stuff - Check for tabs, newlines, spaces.
- *   @s: string to be checked
-   */
-
-void check_stuff(char *s)
+ * tokenizer - tokenizes input and stores it into an array
+ * @input_string: input to be parsed
+ * @delim: delimiter to be used, needs to be one character string
+ * Return: array of tokens
+ */
+char **tokenizer(char *input_string, char *delim)
 {
-		int i;
-			int count;
-
-				count = 0;
-					if (s[0] == '#')
-								s[0] = '\0';
-						for (i = 0; s[i] != '\0'; i++)
-								{
-											if (s[i] == '\t')
-															s[i] = ' ';
-													if (s[i] == '#' && i > 0 && s[i - 1] == ' ')
-																	s[i] = '\0';
-															if (s[i] == '\n' && s[i + 1] == '\0')
-																			s[i] = '\0';
-																}
-							for (i = 0; s[i]; i++)
-									{
-												if (s[i] != ' ')
-																count++;
-													}
-								if (count == 0)
-											s[0] = '\0';
+int num_delim = 0;
+char **av = NULL;
+char *token = NULL;
+char *save_ptr = NULL;
+token = _strtok_r(input_string, delim, &save_ptr);
+while (token != NULL)
+{
+av = _realloc(av, sizeof(*av) * num_delim, sizeof(*av) * (num_delim + 1));
+av[num_delim] = token;
+token = _strtok_r(NULL, delim, &save_ptr);
+num_delim++;
 }
-
-/**
- *   var_parse - parses a "$var" into "var="
- *    @var: the string to be parsed.
- *     Return: malloc'd string. Caller must free.
-      */
-
-char *var_parse(char *var)
-{
-		int i, j;
-			char *parsed_str;
-
-				parsed_str = malloc(sizeof(char) * (_strlen(var) + 1));
-					if (parsed_str == NULL)
-								return (NULL);
-						for (i = 1, j = 0; var[i]; i++, j++)
-								{
-											parsed_str[j] = var[i];
-												}
-							parsed_str[j] = '=';
-								parsed_str[j + 1] = '\0';
-
-									return (parsed_str);
+av = _realloc(av, sizeof(*av) * num_delim, sizeof(*av) * (num_delim + 1));
+av[num_delim] = NULL;
+return (av);
 }
 /**
-   * free_if_needed - frees a pointer if not null
-    * @p: pointer
-    */
-
-void free_if_needed(char *p)
+ * print - prints a string to stdout
+ * @string: string to be printed
+ * @stream: stream to print out to
+ * Return: void, return nothing
+ */
+void print(char *string, int stream)
 {
-		if (p)
-					free(p);
+int i = 0;
+for (; string[i] != '\0'; i++)
+write(stream, &string[i], 1);
 }
-
 /**
- *  free_array - frees the strings in a pointer array
- *    @arr: the array of string pointers
-     */
-
-void free_array(char **arr)
+ * remove_newline - removes new line from a string
+ * @str: string to be used
+ * Return: void
+ */
+void remove_newline(char *str)
 {
-		int i = 0;
-
-			while (arr[i])
-					{
-								free(arr[i]);
-										i++;
-											}
+int i = 0;
+while (str[i] != '\0')
+{
+if (str[i] == '\n')
+break;
+i++;
+}
+str[i] = '\0';
+}
+/**
+ * _strcpy - copies a string to another buffer
+ * @source: source to copy from
+ * @dest: destination to copy to
+ * Return: void
+ */
+veoid _strcpy(char *source, char *dest)
+{
+int i = 0;
+for (; source[i] != '\0'; i++)
+dest[i] = source[i];
+dest[i] = '\0';
+}
+/**
+ * _strlen - counts string length
+ * @string: string to be counted
+ * Return: length of the string
+ */
+int _strlen(char *string)
+{
+int len = 0;
+if (string == NULL)
+return (len);
+for (; string[len] != '\0'; len++)
+;
+return (len);
 }
