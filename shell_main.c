@@ -1,48 +1,38 @@
-#include "shell.h"
-char **commands = NULL;
-char *line = NULL;
-char *shell_name = NULL;
-int status = 0;
+#include "main.h"
 /**
- *   main - the main shell code
- *   @argc: number of arguments passed
- *    @argv: program arguments to be parsed
- *     Return: 0 on success
+ *  main - shell entry point
+ *  @argc: argument count
+ *  @argv: argument list
+ *     
+ *   Return: Always 0
  */
-int main(int argc __attribute__((unused)), char **argv)
+int main(int __attribute__((unused)) argc, char **argv)
 {
-char **current_command = NULL;
-int i, type_command = 0;
 size_t n = 0;
-signal(SIGINT, ctrl_c_handler);
-shell_name = argv[0];
-while (1)
+char *lineptr = NULL, *av[100], *path[100], cmd[100];
+int mode = 1;
+
+parse_path(path);
+while (mode)
 {
-non_interactive();
-print(" ($) ", STDOUT_FILENO);
-if (getline(&line, &n, stdin) == -1)
-{
-free(line);
-exit(status);
-}
-remove_newline(line);
-remove_comment(line);
-commands = tokenizer(line, ";");
-for (i = 0; commands[i] != NULL; i++)
-{
-current_command = tokenizer(commands[i], " ");
-if (current_command[0] == NULL)
-{
-free(current_command);
-break;
-}
-type_command = parse_command(current_command[0]);
-/* initializer -   */
-initializer(current_command, type_command);
-free(current_command);
-}
-free(commands);
-}
-free(line);
-return (status);
+_isatty(&mode);
+signal(SIGINT, handler);
+if (getline(&lineptr, &n, stdin) == -1)
+																	{
+																	free(lineptr);			
+																	write(STDOUT_FILENO, "\n", 1);
+																	exit(0);
+																	}
+if (no_input(lineptr) == 0)
+																	continue;
+																	read_cmd(lineptr, av);
+																	if (ext(lineptr, argv[0], av))
+																	continue;
+																	_strcpy(cmd, av[0]);
+																	if (!find_cmd(av[0], path, cmd))
+																	err_no_exit(argv[0], ": No such file or directory\n");
+																	else
+															
+_fork(cmd, av);																}
+return (0);
 }

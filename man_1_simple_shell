@@ -1,5 +1,6 @@
+
 .TH SHELL 1 "June 7th, 2022"  "alx-Hoberton-School" "0x16" "Simple Shell"
- "1.01" "C - simple_shell - man page"
+"1.01" "C - simple_shell - man page"
 
 .SH NAME
 .B simple_shell \- simple UNIX command interpreter made in C 
@@ -37,7 +38,7 @@ When executing interactively, the simpl_shell displays the prompt
 .SH OPTIONS
 .B simple_shell
 Command options will be typed after the main command followed by a space and a
- '-' symbol.
+'-' symbol.
 
 .SH EXAMPLE
 ./hsh [command] [options]
